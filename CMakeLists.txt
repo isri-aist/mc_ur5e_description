@@ -6,9 +6,7 @@ if(NOT DEFINED ENV{ROS_VERSION})
 endif()
 if($ENV{ROS_VERSION} EQUAL 1)
   set(ROS_VERSION 1)
-  find_package(catkin REQUIRED COMPONENTS
-    ur_description
-  )
+  find_package(catkin REQUIRED COMPONENTS ur_description)
 elseif($ENV{ROS_VERSION} EQUAL 2)
   set(ROS_VERSION 2)
   find_package(ament_cmake REQUIRED)
@@ -24,55 +22,53 @@ message(STATUS "ur_description path ${ur_description_DIR}")
 if("${ur_description_INSTALL_PREFIX}" STREQUAL "")
   if("${ur_description_SOURCE_PREFIX}" STREQUAL "")
     if("${ur_description_DIR}" STREQUAL "")
-      message(FATAL_ERROR "ur_description does not provide SOURCE_PREFIX or INSTALL_PREFIX")
+      message(
+        FATAL_ERROR
+          "ur_description does not provide SOURCE_PREFIX or INSTALL_PREFIX")
     else()
       set(ur_description_PREFIX "${ur_description_DIR}/..")
     endif()
   else()
-   set(ur_description_PREFIX "${ur_description_SOURCE_PREFIX}")
+    set(ur_description_PREFIX "${ur_description_SOURCE_PREFIX}")
   endif()
 else()
-  set(ur_description_PREFIX "${ur_description_INSTALL_PREFIX}/share/ur_description")
+  set(ur_description_PREFIX
+      "${ur_description_INSTALL_PREFIX}/share/ur_description")
 endif()
 
 set(DATA_INSTALL_FOLDER "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}")
 
 set(xacro_SRC
-  ${ur_description_PREFIX}/urdf/inc/ur_common.xacro
-  ${ur_description_PREFIX}/urdf/inc/ur_transmissions.xacro
-  ${ur_description_PREFIX}/config/ur5e/joint_limits.yaml
-  ${ur_description_PREFIX}/config/ur5e/default_kinematics.yaml
-  ${ur_description_PREFIX}/config/ur5e/physical_parameters.yaml
-  ${ur_description_PREFIX}/config/ur5e/visual_parameters.yaml
-)
+    ${ur_description_PREFIX}/urdf/inc/ur_common.xacro
+    ${ur_description_PREFIX}/urdf/inc/ur_transmissions.xacro
+    ${ur_description_PREFIX}/config/ur5e/joint_limits.yaml
+    ${ur_description_PREFIX}/config/ur5e/default_kinematics.yaml
+    ${ur_description_PREFIX}/config/ur5e/physical_parameters.yaml
+    ${ur_description_PREFIX}/config/ur5e/visual_parameters.yaml)
 
 find_program(XACRO xacro REQUIRED)
 set(urdf_OUT "${CMAKE_CURRENT_SOURCE_DIR}/urdf/ur5e.urdf")
 
 if(${ROS_VERSION} EQUAL 1)
-  set(xacro_IN
-    ${ur_description_PREFIX}/urdf/ur5e.xacro
-  )
-  set(xacro_SRC ${xacro_SRC} ${xacro_IN} ${ur_description_PREFIX}/urdf/inc/ur_macro.xacro)
+  set(xacro_IN ${ur_description_PREFIX}/urdf/ur5e.xacro)
+  set(xacro_SRC ${xacro_SRC} ${xacro_IN}
+                ${ur_description_PREFIX}/urdf/inc/ur_macro.xacro)
 
   add_custom_command(
     OUTPUT ${urdf_OUT}
     COMMAND ${XACRO} -i ${xacro_IN} -o ${urdf_OUT}
     DEPENDS ${xacro_SRC}
-    COMMENT "Generate ${urdf_OUT}"
-  )
+    COMMENT "Generate ${urdf_OUT}")
 elseif(${ROS_VERSION} EQUAL 2)
-  set(xacro_IN
-    ${ur_description_PREFIX}/urdf/ur.urdf.xacro
-  )
-  set(xacro_SRC ${xacro_SRC} ${xacro_IN}   ${ur_description_PREFIX}/urdf/ur_macro.xacro)
+  set(xacro_IN ${ur_description_PREFIX}/urdf/ur.urdf.xacro)
+  set(xacro_SRC ${xacro_SRC} ${xacro_IN}
+                ${ur_description_PREFIX}/urdf/ur_macro.xacro)
 
   add_custom_command(
     OUTPUT ${urdf_OUT}
     COMMAND ${XACRO} ${xacro_IN} name:=ur ur_type:=ur5e -o ${urdf_OUT}
     DEPENDS ${xacro_SRC}
-    COMMENT "Generate ${urdf_OUT}"
-  )
+    COMMENT "Generate ${urdf_OUT}")
 endif()
 
 add_custom_target(generate-mc-ur5e-urdf ALL DEPENDS ${urdf_OUT})
@@ -118,6 +114,5 @@ if(${ROS_VERSION} EQUAL 2)
     @ONLY)
   ament_package(
     CONFIG_EXTRAS
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake/mc_ur5_description_INSTALL_PREFIX.cmake"
-  )
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/mc_ur5_description_INSTALL_PREFIX.cmake")
 endif()

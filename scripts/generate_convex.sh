@@ -52,4 +52,3 @@ generate_convexes
 
 echo
 echo "Successfully generated convex from ${robot_desc_name} package in ${gen_path}"
-
