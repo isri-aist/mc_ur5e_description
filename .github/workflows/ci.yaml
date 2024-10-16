@@ -2,6 +2,9 @@ name: CI of mc_ur5e_description
 
 on:
   push:
+    paths-ignore:
+      - README.md
+      - ".pre-commit-config.yaml"
     branches:
       - '**'
   pull_request:
