@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+<!-- Copyright (c) 2012-2019, CNRS-UM LIRMM, CNRS-AIST JRL                               -->
+<!-- =================================================================================== -->
+<robot name="ur5e">
+  <planar_surface name="Wrist" link="wrist_3_link">
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <points>
+      <point xy="-0.0375 -0.0375" />
+      <point xy="0.0375 -0.0375" />
+      <point xy="0.0375 0.0375" />
+      <point xy="-0.0375 0.0375" />
+    </points>
+    <material name="plastic" />
+  </planar_surface>
+</robot>
