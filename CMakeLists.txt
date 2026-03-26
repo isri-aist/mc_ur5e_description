@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
-project(mc_ur5e_description)
+cmake_minimum_required(VERSION 3.22)
+project(mc_ur5e_description VERSION 1.0.1)
 
 if(NOT DEFINED ENV{ROS_VERSION})
   message(FATAL_ERROR "ROS_VERSION is not set in the environment")
