@@ -47,7 +47,8 @@ set(xacro_SRC
     ${ur_description_PREFIX}/config/ur5e/visual_parameters.yaml)
 
 find_program(XACRO xacro REQUIRED)
-set(urdf_OUT "${CMAKE_CURRENT_SOURCE_DIR}/urdf/ur5e.urdf")
+set(urdf_OUT "${CMAKE_CURRENT_BINARY_DIR}/urdf/ur5e.urdf")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/urdf")
 
 if(${ROS_VERSION} EQUAL 1)
   set(xacro_IN ${ur_description_PREFIX}/urdf/ur5e.xacro)
@@ -55,20 +56,32 @@ if(${ROS_VERSION} EQUAL 1)
                 ${ur_description_PREFIX}/urdf/inc/ur_macro.xacro)
 
   add_custom_command(
-    OUTPUT ${urdf_OUT}
-    COMMAND ${XACRO} -i ${xacro_IN} -o ${urdf_OUT}
+    OUTPUT "${urdf_OUT}"
+    COMMAND "${XACRO}" -i "${xacro_IN}" -o "${urdf_OUT}"
+    COMMAND
+      "${CMAKE_COMMAND}" "-DINPUT_FILE=${urdf_OUT}"
+      "-DUR_DESCRIPTION_PREFIX=${ur_description_PREFIX}" -P
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ResolveUrDescriptionPaths.cmake"
     DEPENDS ${xacro_SRC}
-    COMMENT "Generate ${urdf_OUT}")
+            "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ResolveUrDescriptionPaths.cmake"
+    COMMENT "Generate ${urdf_OUT}"
+    VERBATIM)
 elseif(${ROS_VERSION} EQUAL 2)
   set(xacro_IN ${ur_description_PREFIX}/urdf/ur.urdf.xacro)
   set(xacro_SRC ${xacro_SRC} ${xacro_IN}
                 ${ur_description_PREFIX}/urdf/ur_macro.xacro)
 
   add_custom_command(
-    OUTPUT ${urdf_OUT}
-    COMMAND ${XACRO} ${xacro_IN} name:=ur ur_type:=ur5e -o ${urdf_OUT}
+    OUTPUT "${urdf_OUT}"
+    COMMAND "${XACRO}" "${xacro_IN}" name:=ur ur_type:=ur5e -o "${urdf_OUT}"
+    COMMAND
+      "${CMAKE_COMMAND}" "-DINPUT_FILE=${urdf_OUT}"
+      "-DUR_DESCRIPTION_PREFIX=${ur_description_PREFIX}" -P
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ResolveUrDescriptionPaths.cmake"
     DEPENDS ${xacro_SRC}
-    COMMENT "Generate ${urdf_OUT}")
+            "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ResolveUrDescriptionPaths.cmake"
+    COMMENT "Generate ${urdf_OUT}"
+    VERBATIM)
 endif()
 
 add_custom_target(generate-mc-ur5e-urdf ALL DEPENDS ${urdf_OUT})
@@ -100,7 +113,7 @@ else()
   install(FILES package.xml DESTINATION "${CATKIN_PACKAGE_SHARE_DESTINATION}")
 endif()
 
-foreach(dir convex launch meshes rsdf urdf rviz)
+foreach(dir convex launch meshes rsdf rviz)
   if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir})
     install(DIRECTORY ${dir}/
             DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
