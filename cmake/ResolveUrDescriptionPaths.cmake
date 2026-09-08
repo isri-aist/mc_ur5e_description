@@ -8,7 +8,7 @@ endif()
 
 file(READ "${INPUT_FILE}" URDF_CONTENT)
 
-string(REPLACE "package://ur_description/" "${UR_DESCRIPTION_PREFIX}/"
+string(REPLACE "package://ur_description/" "file://${UR_DESCRIPTION_PREFIX}/"
                URDF_CONTENT "${URDF_CONTENT}")
 
 file(WRITE "${INPUT_FILE}" "${URDF_CONTENT}")
